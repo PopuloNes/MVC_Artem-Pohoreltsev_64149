@@ -1,0 +1,23 @@
+{% load static %} <!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+</html>
+
+<div class="container">
+    <header>
+        <h1>Hello, World! Welcome to our website!</h1>
+        <p>Our opinion is very impotant to us. Please select a question below and leave your answer</p>
+    </header>
+
+    <hr> {% if latest_question_list %}
+        <ul>
+        {% for question in latest_question_list %}
+            <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>К сожалению, пока нет доступных опросов.</p>
+    {% endif %}
+</div>
