@@ -1,0 +1,80 @@
+@model RaceReader.Models.Book
+@{
+    ViewData["Title"] = "Edit Book";
+}
+
+<div class="max-w-4xl mx-auto py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-black text-white italic uppercase tracking-wider">EDIT BOOK</h1>
+        <a asp-action="Index" class="text-gray-400 hover:text-white transition-colors">Back to List</a>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-brand-red mb-6 text-sm bg-red-900/20 p-4 rounded-lg border border-red-900/50"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CoverImagePath" />
+            <input type="hidden" asp-for="PdfFilePath" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Title -->
+                <div>
+                    <label asp-for="Title" class="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wide">Title</label>
+                    <input asp-for="Title" class="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors" placeholder="e.g. Race Car Aerodynamics" required />
+                    <span asp-validation-for="Title" class="text-brand-red text-xs mt-1 block"></span>
+                </div>
+
+                <!-- Author -->
+                <div>
+                    <label asp-for="Author" class="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wide">Author</label>
+                    <input asp-for="Author" class="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors" placeholder="e.g. Joseph Katz" required />
+                    <span asp-validation-for="Author" class="text-brand-red text-xs mt-1 block"></span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6">
+                <label asp-for="Description" class="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wide">Description</label>
+                <textarea asp-for="Description" rows="5" class="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors" placeholder="Book description..." required></textarea>
+                <span asp-validation-for="Description" class="text-brand-red text-xs mt-1 block"></span>
+            </div>
+
+            <div class="mb-8">
+                <!-- Genre -->
+                <div>
+                    <label asp-for="CategoryId" class="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wide">Genre</label>
+                    <select asp-for="CategoryId" class="w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors appearance-none" asp-items="ViewBag.CategoryId" required>
+                        <option value="">-- Select Genre --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-gray-800/50 rounded-xl border border-gray-700">
+                <!-- Cover Image -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Update Cover Image</label>
+                    <input type="file" name="coverFile" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-red file:text-white hover:file:bg-red-700 cursor-pointer" />
+                    <p class="text-xs text-gray-500 mt-2">Leave empty to keep the current cover.</p>
+                </div>
+
+                <!-- PDF File -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Update Book Content (PDF)</label>
+                    <input type="file" name="pdfFile" accept="application/pdf" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600 cursor-pointer" />
+                    <p class="text-xs text-gray-500 mt-2">Leave empty to keep the current PDF.</p>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-end pt-4 border-t border-gray-800">
+                <button type="submit" class="px-8 py-3 bg-brand-red hover:bg-red-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-brand-red/20 uppercase tracking-wide">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

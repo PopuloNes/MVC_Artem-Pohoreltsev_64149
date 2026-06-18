@@ -1,0 +1,301 @@
+@model RaceReader.Models.Book
+@{
+    Layout = null; // No navbar, full screen
+}
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Model.Title - RaceReader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { red: '#E10600', dark: '#111827', darker: '#030712' } },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pdf-page-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 20px auto;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            position: relative;
+            min-height: 800px; /* Placeholder height */
+        }
+        .pdf-page-container canvas {
+            width: 100%; /* Downscale the high-res canvas */
+            height: auto;
+            border-radius: 4px;
+        }
+        /* Hide scrollbar but keep functionality */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4B5563; }
+        
+        .star-rating svg { transition: transform 0.1s, color 0.1s; }
+        .star-rating svg:hover { transform: scale(1.2); }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 font-sans h-screen flex flex-col overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="h-14 bg-brand-darker border-b border-gray-800 flex items-center justify-between px-4 sm:px-6 flex-shrink-0 z-10 shadow-md">
+        <div class="flex items-center gap-4">
+            <a asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Id" class="text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <h1 class="font-bold text-white text-sm sm:text-base line-clamp-1">@Model.Title</h1>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <!-- Rating UI -->
+            <div class="hidden sm:flex items-center gap-1 star-rating" id="rating-stars">
+                @for(int i=1; i<=5; i++)
+                {
+                    <svg data-score="@i" class="w-5 h-5 cursor-pointer text-gray-600 hover:text-brand-red" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                }
+            </div>
+            <div class="h-6 w-px bg-gray-700 hidden sm:block"></div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-sm font-medium text-gray-400">Page <span id="page-num" class="text-white font-bold"></span> / <span id="page-count"></span></span>
+            </div>
+            
+            <div class="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-xs font-bold text-white" id="reading-timer">00:00</span>
+            </div>
+            
+            <div class="px-3 py-1 bg-gray-800 border border-gray-700 rounded-full flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-brand-red animate-pulse"></div>
+                <span class="text-xs font-bold text-white">Tokens: <span id="token-balance">@ViewBag.TokenBalance</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Viewer (Continuous Scroll) -->
+    <div class="flex-grow overflow-y-auto p-4 bg-gray-900" id="scroll-container">
+        <!-- Pages will be injected here -->
+        <div id="pdf-wrapper" class="flex flex-col items-center"></div>
+    </div>
+
+    <!-- Modals (Same as before) -->
+    <div id="warning-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-gray-900 border border-brand-red p-8 rounded-2xl max-w-md text-center">
+            <h3 class="text-2xl font-display font-bold text-white mb-2">Tokens Running Low!</h3>
+            <p class="text-gray-400 mb-6">You only have <span id="warning-tokens" class="text-brand-red font-bold"></span> tokens left. Please top up to continue reading without interruption.</p>
+            <button onclick="document.getElementById('warning-modal').classList.add('hidden')" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors mr-2">Dismiss</button>
+            <a href="/Home/Pricing" target="_blank" class="px-6 py-2 bg-brand-red hover:bg-red-700 text-white font-semibold rounded-lg transition-colors inline-block">Top Up Now</a>
+        </div>
+    </div>
+
+    <div id="out-of-tokens-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-gray-900 border border-brand-red p-8 rounded-2xl max-w-md text-center">
+            <svg class="w-16 h-16 text-brand-red mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h3 class="text-2xl font-display font-bold text-white mb-2">Out of Tokens</h3>
+            <p class="text-gray-400 mb-6">You have run out of tokens. Reading has been paused.</p>
+            <a href="/Home/Pricing" class="w-full px-6 py-3 bg-brand-red hover:bg-red-700 text-white font-bold rounded-lg transition-colors shadow-lg shadow-brand-red/30 block mb-3">Buy Tokens</a>
+            <a asp-controller="Catalog" asp-action="Details" asp-route-id="@Model.Id" class="w-full px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors block">Back to Book</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        const url = '@Model.PdfFilePath';
+        
+        let pdfDoc = null,
+            currentPageNum = @ViewBag.StartPage,
+            sessionId = @ViewBag.SessionId,
+            bookId = @Model.Id,
+            currentTokens = parseInt('@ViewBag.TokenBalance');
+
+        // INCREASE SCALE for high DPI (Retina) quality
+        const scale = 2.5; 
+        const wrapper = document.getElementById('pdf-wrapper');
+
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        // Set up Intersection Observer for Lazy Loading
+        const observerOptions = {
+            root: document.getElementById('scroll-container'),
+            rootMargin: '100% 0px 100% 0px', // Preload 1 screen ahead/behind
+            threshold: 0
+        };
+
+        const pageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const pageContainer = entry.target;
+                    const pageNum = parseInt(pageContainer.dataset.page);
+                    
+                    // Render page if not already rendered
+                    if (!pageContainer.hasAttribute('data-rendered')) {
+                        renderPageIntoContainer(pageNum, pageContainer);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Active page observer (to update the page counter correctly)
+        const activePageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const pageNum = parseInt(entry.target.dataset.page);
+                    if(currentPageNum !== pageNum) {
+                        currentPageNum = pageNum;
+                        document.querySelector('#page-num').textContent = pageNum;
+                        // Save background progress (no token deduction)
+                        fetch('/Reader/SaveProgress', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ SessionId: sessionId, Page: pageNum })
+                        });
+                    }
+                }
+            });
+        }, { root: document.getElementById('scroll-container'), threshold: 0.5 }); // 50% visibility
+
+        const renderPageIntoContainer = (num, container) => {
+            container.setAttribute('data-rendered', 'true');
+            // Show loading text
+            container.innerHTML = '<div class="absolute inset-0 flex items-center justify-center text-gray-400">Loading page ' + num + '...</div>';
+            
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                // Adjust container height to match scaled viewport (scaled back down by CSS width: 100%)
+                const cssScale = container.clientWidth / viewport.width;
+                container.style.minHeight = (viewport.height * cssScale) + 'px';
+
+                const renderCtx = { canvasContext: ctx, viewport };
+                
+                page.render(renderCtx).promise.then(() => {
+                    container.innerHTML = ''; // clear loading text
+                    container.appendChild(canvas);
+                });
+            });
+        };
+
+        pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+            pdfDoc = pdfDoc_;
+            document.querySelector('#page-count').textContent = pdfDoc.numPages;
+            document.querySelector('#page-num').textContent = currentPageNum;
+            
+            // Create placeholders for all pages
+            for (let i = 1; i <= pdfDoc.numPages; i++) {
+                const pageContainer = document.createElement('div');
+                pageContainer.className = 'pdf-page-container';
+                pageContainer.dataset.page = i;
+                wrapper.appendChild(pageContainer);
+                
+                pageObserver.observe(pageContainer);
+                activePageObserver.observe(pageContainer);
+                
+                // If it's the start page, scroll to it immediately
+                if (i === currentPageNum && i > 1) {
+                    setTimeout(() => pageContainer.scrollIntoView(), 500);
+                }
+            }
+        });
+
+        // Reading Timer UI Update
+        let readingSeconds = 0;
+        setInterval(() => {
+            if(currentTokens <= 0) return;
+            readingSeconds++;
+            const minutes = Math.floor(readingSeconds / 60);
+            const seconds = readingSeconds % 60;
+            document.querySelector('#reading-timer').textContent = 
+                String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        }, 1000);
+
+        // Token Deduction Interval (10 minutes = 600000 ms)
+        setInterval(() => {
+            if(currentTokens <= 0) return;
+            
+            fetch('/Reader/DeductTokenAndSaveProgress', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ SessionId: sessionId, Page: currentPageNum })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    currentTokens = data.tokens;
+                    document.querySelector('#token-balance').textContent = currentTokens;
+                    
+                    if(currentTokens === 5) {
+                        document.querySelector('#warning-tokens').textContent = currentTokens;
+                        document.querySelector('#warning-modal').classList.remove('hidden');
+                    }
+                    else if(currentTokens === 0) {
+                        document.querySelector('#out-of-tokens-modal').classList.remove('hidden');
+                    }
+                } else if(!data.success && data.message === 'Out of tokens') {
+                    currentTokens = 0;
+                    document.querySelector('#token-balance').textContent = 0;
+                    document.querySelector('#out-of-tokens-modal').classList.remove('hidden');
+                }
+            });
+        }, 600000);
+
+        // Rating UI Logic
+        const stars = document.querySelectorAll('#rating-stars svg');
+        let currentRating = 0;
+        
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function() {
+                const hoverScore = this.dataset.score;
+                stars.forEach(s => {
+                    if (s.dataset.score <= hoverScore) {
+                        s.classList.remove('text-gray-600');
+                        s.classList.add('text-brand-red');
+                    } else {
+                        s.classList.add('text-gray-600');
+                        s.classList.remove('text-brand-red');
+                    }
+                });
+            });
+            
+            star.addEventListener('mouseleave', function() {
+                stars.forEach(s => {
+                    if (s.dataset.score <= currentRating) {
+                        s.classList.remove('text-gray-600');
+                        s.classList.add('text-brand-red');
+                    } else {
+                        s.classList.add('text-gray-600');
+                        s.classList.remove('text-brand-red');
+                    }
+                });
+            });
+            
+            star.addEventListener('click', function() {
+                currentRating = this.dataset.score;
+                // Send rating to backend
+                fetch('/Reader/RateBook', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ BookId: bookId, Score: parseInt(currentRating) })
+                });
+            });
+        });
+    </script>
+</body>
+</html>

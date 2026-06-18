@@ -1,0 +1,58 @@
+@model IEnumerable<RaceReader.Models.Book>
+@{
+    ViewData["Title"] = "Manage Books";
+}
+
+<div class="flex items-center justify-between mb-8">
+    <h1 class="font-display font-black text-3xl text-white uppercase">Manage Books</h1>
+    <a asp-action="Create" class="px-6 py-2 bg-brand-red hover:bg-red-700 text-white font-bold rounded-lg transition-colors">Add New Book</a>
+</div>
+
+<div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-gray-400">
+            <thead class="text-xs text-gray-500 uppercase bg-gray-800/50 border-b border-gray-800">
+                <tr>
+                    <th scope="col" class="px-4 py-3 font-bold">Cover</th>
+                    <th scope="col" class="px-4 py-3 font-bold">Title</th>
+                    <th scope="col" class="px-4 py-3 font-bold">Author</th>
+                    <th scope="col" class="px-4 py-3 font-bold">Genre</th>
+                    <th scope="col" class="px-4 py-3 font-bold">Has PDF</th>
+                    <th scope="col" class="px-4 py-3 font-bold text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
+                        <td class="px-4 py-3">
+                            <div class="w-10 h-14 bg-gray-800 rounded overflow-hidden">
+                                @if(!string.IsNullOrEmpty(item.CoverImagePath))
+                                {
+                                    <img src="@item.CoverImagePath" class="w-full h-full object-cover" />
+                                }
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 font-medium text-white">@item.Title</td>
+                        <td class="px-4 py-3">@item.Author</td>
+                        <td class="px-4 py-3">@(item.Category?.Name)</td>
+                        <td class="px-4 py-3">
+                            @if(!string.IsNullOrEmpty(item.PdfFilePath))
+                            {
+                                <span class="px-2 py-1 bg-green-500/10 text-green-500 text-xs rounded font-bold">YES</span>
+                            }
+                            else
+                            {
+                                <span class="px-2 py-1 bg-red-500/10 text-red-500 text-xs rounded font-bold">NO</span>
+                            }
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-400 hover:text-indigo-300 mr-3">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="text-brand-red hover:text-red-400">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

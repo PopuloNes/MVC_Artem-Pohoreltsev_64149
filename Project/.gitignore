@@ -1,0 +1,13 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.idea/
+node_modules/
+*.db
+*.db-shm
+*.db-wal
+appsettings.Development.json
+*.py
+*.csx

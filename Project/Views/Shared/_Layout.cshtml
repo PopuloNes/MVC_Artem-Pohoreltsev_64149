@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RaceReader</title>
+    
+    <!-- Google Fonts: Inter & Outfit for Motorsport feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#E10600', // F1 Red
+                            dark: '#111827', // Gray-900
+                            darker: '#030712', // Gray-950
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-brand-darker text-gray-300 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-red selection:text-white">
+    
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 w-full backdrop-blur-lg bg-brand-darker/80 border-b border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a asp-controller="Home" asp-action="Index" class="flex items-center gap-2">
+                        <span class="font-display font-black text-2xl text-white italic tracking-tighter uppercase">RACE<span class="text-brand-red">READER</span></span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a asp-controller="Home" asp-action="Index" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Catalog</a>
+                    <a asp-controller="Home" asp-action="Pricing" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Pricing</a>
+                    
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Library" asp-action="Index" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">My Library</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="relative group">
+                                <button class="text-sm font-semibold text-brand-red hover:text-red-400 transition-colors flex items-center gap-1">
+                                    Admin Panel
+                                </button>
+                                <div class="absolute right-0 top-full pt-2 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden py-1">
+                                        <a asp-controller="Books" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white">Books</a>
+                                        <a asp-controller="Categories" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white">Genres</a>
+                                        <a asp-controller="Users" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white border-t border-gray-700">Users</a>
+                                        <a asp-controller="Comments" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white">Comments</a>
+                                        <a asp-controller="Ratings" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white">Ratings</a>
+                                        <a asp-controller="Transactions" asp-action="Index" class="block px-4 py-2 text-sm hover:bg-gray-700 text-gray-300 hover:text-white border-t border-gray-700">Transactions</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </nav>
+                
+                <!-- Auth Section -->
+                <div class="hidden md:flex items-center space-x-4">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <div class="flex items-center gap-4">
+                            <!-- Tokens pill removed as requested -->
+                            <form class="m-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Sign out</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="/Identity/Account/Login" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Sign in</a>
+                        <a href="/Identity/Account/Register" class="text-sm font-semibold bg-brand-red hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all shadow-lg shadow-brand-red/20">Get Started</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-500 text-sm">
+                &copy; @DateTime.Now.Year RaceReader. High-octane reading.
+            </p>
+            <div class="flex space-x-6 text-sm text-gray-500">
+                <a href="#" class="hover:text-white transition-colors">Terms</a>
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

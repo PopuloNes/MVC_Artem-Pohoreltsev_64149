@@ -1,0 +1,57 @@
+@model RaceReader.Models.Comment
+@{
+    ViewData["Title"] = "Moderate Comment";
+}
+
+<div class="mb-8">
+    <a asp-action="Index" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors flex items-center gap-2 mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Comments
+    </a>
+    <h1 class="font-display font-black text-4xl text-white italic tracking-tight uppercase">Moderate Comment</h1>
+</div>
+
+<div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 max-w-2xl shadow-2xl">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-brand-red text-sm font-medium mb-4 p-4 bg-brand-red/10 border border-brand-red/20 rounded-lg"></div>
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="space-y-6">
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                <div class="flex flex-col gap-2 mb-4">
+                    <div>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Book</span>
+                        <span class="text-white font-medium text-sm">@Model.Book?.Title</span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">User</span>
+                        <span class="text-gray-300 font-medium text-sm">@Model.User?.Email</span>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Date</span>
+                        <span class="text-gray-400 text-xs">@Model.CreatedAt.ToString("f")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="Text" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Comment Text</label>
+                <textarea asp-for="Text" rows="5" class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 transition-colors outline-none resize-none"></textarea>
+                <span asp-validation-for="Text" class="text-brand-red text-xs mt-1 block"></span>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-gray-800 flex gap-4">
+            <button type="submit" class="px-6 py-2 bg-brand-red hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-brand-red/20">
+                Save Changes
+            </button>
+            <a asp-action="Index" class="px-6 py-2 bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white font-semibold rounded-lg transition-colors border border-transparent hover:border-gray-700">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

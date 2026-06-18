@@ -1,0 +1,55 @@
+@model RaceReader.Models.Comment
+@{
+    ViewData["Title"] = "Delete Comment";
+}
+
+<div class="mb-8">
+    <a asp-action="Index" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors flex items-center gap-2 mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Comments
+    </a>
+    <h1 class="font-display font-black text-4xl text-white italic tracking-tight uppercase">Delete Comment</h1>
+</div>
+
+<div class="bg-gray-900 border border-brand-red/50 rounded-2xl p-8 max-w-2xl shadow-2xl relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-2 bg-brand-red"></div>
+    
+    <div class="flex items-center gap-4 mb-6">
+        <div class="p-3 bg-brand-red/10 text-brand-red rounded-full">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        </div>
+        <div>
+            <h2 class="text-xl font-bold text-white">Delete this comment?</h2>
+            <p class="text-gray-400 text-sm">This action cannot be undone. The comment will be permanently removed.</p>
+        </div>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8 space-y-4">
+        <div>
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">User</span>
+            <span class="text-white font-medium text-sm">@Model.User?.Email</span>
+        </div>
+        <div>
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Book</span>
+            <span class="text-gray-300 font-medium text-sm">@Model.Book?.Title</span>
+        </div>
+        <div>
+            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-1">Comment</span>
+            <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
+                <p class="text-gray-300 text-sm">@Model.Text</p>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div class="flex gap-4">
+            <button type="submit" class="px-6 py-2 bg-brand-red hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-brand-red/20">
+                Yes, Delete Comment
+            </button>
+            <a asp-action="Index" class="px-6 py-2 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg transition-colors border border-gray-700">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>

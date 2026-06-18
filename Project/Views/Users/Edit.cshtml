@@ -1,0 +1,59 @@
+@model RaceReader.Models.ViewModels.UserEditViewModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="mb-8">
+    <a asp-action="Index" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors flex items-center gap-2 mb-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Users
+    </a>
+    <h1 class="font-display font-black text-4xl text-white italic tracking-tight uppercase">Edit User</h1>
+</div>
+
+<div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 max-w-2xl shadow-2xl">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-brand-red text-sm font-medium mb-4 p-4 bg-brand-red/10 border border-brand-red/20 rounded-lg"></div>
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="space-y-6">
+            <div>
+                <label asp-for="Email" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Email</label>
+                <input asp-for="Email" class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 transition-colors outline-none" />
+                <span asp-validation-for="Email" class="text-brand-red text-xs mt-1 block"></span>
+            </div>
+            
+            <div>
+                <label asp-for="TokenBalance" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Token Balance</label>
+                <div class="relative">
+                    <input asp-for="TokenBalance" class="w-full bg-gray-800 border border-gray-700 text-white text-sm font-bold rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 pl-12 transition-colors outline-none" />
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-brand-red font-black">T</span>
+                    </div>
+                </div>
+                <span asp-validation-for="TokenBalance" class="text-brand-red text-xs mt-1 block"></span>
+                <p class="text-gray-500 text-xs mt-2">Adjust the user's reading tokens manually. Tokens are deducted when reading.</p>
+            </div>
+
+            <div class="flex items-center gap-3 bg-gray-800 p-4 rounded-lg border border-gray-700">
+                <input asp-for="EmailConfirmed" class="w-5 h-5 bg-gray-900 border-gray-700 rounded text-brand-red focus:ring-brand-red" />
+                <label asp-for="EmailConfirmed" class="text-sm font-medium text-white select-none cursor-pointer">
+                    Email Confirmed
+                </label>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-gray-800 flex gap-4">
+            <button type="submit" class="px-6 py-2 bg-brand-red hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-lg shadow-brand-red/20">
+                Save Changes
+            </button>
+            <a asp-action="Index" class="px-6 py-2 bg-transparent hover:bg-gray-800 text-gray-400 hover:text-white font-semibold rounded-lg transition-colors border border-transparent hover:border-gray-700">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
