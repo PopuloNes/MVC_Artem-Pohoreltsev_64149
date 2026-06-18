@@ -16,7 +16,6 @@
         </div>
         <form class="mt-8 space-y-6" id="account" method="post">
             <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm font-medium text-center" role="alert"></div>
-            
             <div class="space-y-4">
                 <div>
                     <label asp-for="Input.Email" class="block text-sm font-medium text-gray-300">Email address</label>
@@ -44,7 +43,6 @@
                     <span class="btn-motorsport-inner">Log in</span>
                 </button>
             </div>
-            
             <div class="text-center mt-4 text-sm text-gray-400">
                 <p>
                     <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="font-medium text-brand-red hover:text-red-400">Register as a new user</a>

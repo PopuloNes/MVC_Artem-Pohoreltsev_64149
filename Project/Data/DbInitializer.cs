@@ -35,7 +35,7 @@ namespace RaceReader.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true,
-                    TokenBalance = 1000 // Give admin some tokens for testing
+                    TokenBalance = 1000 
                 };
 
                 var createPowerUser = await userManager.CreateAsync(user, "Admin123!");
@@ -45,7 +45,6 @@ namespace RaceReader.Data
                 }
             }
 
-            // Create test user
             var testEmail = "test@racereader.com";
             var testUser = await userManager.FindByEmailAsync(testEmail);
             if (testUser == null)
@@ -55,7 +54,7 @@ namespace RaceReader.Data
                     UserName = testEmail,
                     Email = testEmail,
                     EmailConfirmed = true,
-                    TokenBalance = 0 // 0 tokens to test purchasing
+                    TokenBalance = 0 
                 };
 
                 var createTestUser = await userManager.CreateAsync(user, "Test123!");
@@ -77,7 +76,6 @@ namespace RaceReader.Data
                 await dbContext.SaveChangesAsync();
             }
 
-            // Seed comments and ratings
             var testUserFromDb = await userManager.FindByEmailAsync("test@racereader.com");
             var adminUserFromDb = await userManager.FindByEmailAsync("admin@racereader.com");
 
@@ -86,7 +84,6 @@ namespace RaceReader.Data
                 var books = dbContext.Books.ToList();
                 foreach (var book in books)
                 {
-                    // Check if comments exist
                     if (!dbContext.Comments.Any(c => c.BookId == book.Id))
                     {
                         dbContext.Comments.AddRange(
@@ -95,7 +92,6 @@ namespace RaceReader.Data
                         );
                     }
 
-                    // Check if ratings exist
                     if (!dbContext.Ratings.Any(r => r.BookId == book.Id))
                     {
                         dbContext.Ratings.AddRange(

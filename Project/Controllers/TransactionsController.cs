@@ -21,7 +21,6 @@ public class TransactionsController : Controller
             .Include(t => t.User)
             .OrderByDescending(t => t.CreatedAt)
             .ToListAsync();
-            
         return View(transactions);
     }
 }

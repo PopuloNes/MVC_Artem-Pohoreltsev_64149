@@ -21,15 +21,11 @@
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Main Column -->
     <div class="lg:col-span-2 space-y-8">
-        
-        <!-- My Books -->
         <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
             <div class="p-6 border-b border-gray-800">
                 <h3 class="font-display font-bold text-xl text-white">My Books</h3>
             </div>
-            
             <div class="p-6">
                 @if (!Model.LibraryItems.Any())
                 {
@@ -73,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Reading Sessions -->
         <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
             <div class="p-6 border-b border-gray-800">
                 <h3 class="font-display font-bold text-xl text-white">Reading History & Stats</h3>
@@ -113,12 +108,9 @@
                 }
             </div>
         </div>
-        
     </div>
 
-    <!-- Sidebar Column -->
     <div class="space-y-8">
-        <!-- Transaction History -->
         <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
             <div class="p-6 border-b border-gray-800">
                 <h3 class="font-display font-bold text-xl text-white">Purchase History</h3>

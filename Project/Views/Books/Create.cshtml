@@ -11,14 +11,12 @@
 
     <form asp-action="Create" enctype="multipart/form-data" class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
         <div asp-validation-summary="ModelOnly" class="text-brand-red mb-4"></div>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
                 <label asp-for="Title" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Title</label>
                 <input asp-for="Title" class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 transition-colors outline-none" required />
                 <span asp-validation-for="Title" class="text-brand-red text-xs mt-1"></span>
             </div>
-            
             <div>
                 <label asp-for="Author" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Author</label>
                 <input asp-for="Author" class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 transition-colors outline-none" required />
@@ -41,13 +39,11 @@
             </div>
         </div>
 
-        <!-- Files Upload -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-gray-800/50 rounded-xl border border-gray-700">
             <div>
                 <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2">Cover Image (JPEG/PNG)</label>
                 <input type="file" name="coverFile" accept="image/*" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600 cursor-pointer" />
             </div>
-            
             <div>
                 <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2">Book Content (PDF)</label>
                 <input type="file" name="pdfFile" accept="application/pdf" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-red/20 file:text-brand-red hover:file:bg-brand-red/30 cursor-pointer" required />

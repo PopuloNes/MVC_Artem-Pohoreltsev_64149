@@ -5,9 +5,7 @@ namespace RaceReader.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public int TokenBalance { get; set; } = 60; // Стартовый баланс на 1 час чтения
-        
-        // Navigation properties
+        public int TokenBalance { get; set; } = 60; 
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<ReadingSession> ReadingSessions { get; set; }
         public virtual ICollection<UserLibrary> UserLibraries { get; set; }

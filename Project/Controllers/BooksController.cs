@@ -43,7 +43,6 @@ namespace RaceReader.Controllers
             ModelState.Remove("UserLibraries");
             ModelState.Remove("Comments");
             ModelState.Remove("Ratings");
-            
             if (ModelState.IsValid)
             {
                 var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
@@ -78,13 +77,11 @@ namespace RaceReader.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", book.CategoryId);
             return View(book);
         }
-        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
             var book = await _context.Books.FindAsync(id);
             if (book == null) return NotFound();
-            
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", book.CategoryId);
             return View(book);
         }

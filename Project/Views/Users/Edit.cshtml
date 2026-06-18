@@ -15,14 +15,12 @@
     <form asp-action="Edit">
         <div asp-validation-summary="ModelOnly" class="text-brand-red text-sm font-medium mb-4 p-4 bg-brand-red/10 border border-brand-red/20 rounded-lg"></div>
         <input type="hidden" asp-for="Id" />
-        
         <div class="space-y-6">
             <div>
                 <label asp-for="Email" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Email</label>
                 <input asp-for="Email" class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-brand-red focus:border-brand-red block p-3 transition-colors outline-none" />
                 <span asp-validation-for="Email" class="text-brand-red text-xs mt-1 block"></span>
             </div>
-            
             <div>
                 <label asp-for="TokenBalance" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Token Balance</label>
                 <div class="relative">

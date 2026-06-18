@@ -18,7 +18,6 @@ namespace RaceReader.Controllers
             _context = context;
         }
 
-        // GET: Ratings
         public async Task<IActionResult> Index()
         {
             var ratings = await _context.Ratings
@@ -29,7 +28,6 @@ namespace RaceReader.Controllers
             return View(ratings);
         }
 
-        // GET: Ratings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -49,7 +47,6 @@ namespace RaceReader.Controllers
             return View(rating);
         }
 
-        // POST: Ratings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

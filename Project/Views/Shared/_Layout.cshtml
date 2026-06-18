@@ -4,13 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RaceReader</title>
-    
-    <!-- Google Fonts: Inter & Outfit for Motorsport feel -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,9 +19,9 @@
                     },
                     colors: {
                         brand: {
-                            red: '#E10600', // F1 Red
-                            dark: '#111827', // Gray-900
-                            darker: '#030712', // Gray-950
+                            red: '#E10600', 
+                            dark: '#111827', 
+                            darker: '#030712', 
                         }
                     }
                 }
@@ -35,23 +31,17 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body class="bg-brand-darker text-gray-300 font-sans min-h-screen flex flex-col antialiased selection:bg-brand-red selection:text-white">
-    
-    <!-- Navbar -->
     <header class="sticky top-0 z-50 w-full backdrop-blur-lg bg-brand-darker/80 border-b border-gray-800">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a asp-controller="Home" asp-action="Index" class="flex items-center gap-2">
                         <span class="font-display font-black text-2xl text-white italic tracking-tighter uppercase">RACE<span class="text-brand-red">READER</span></span>
                     </a>
                 </div>
-                
-                <!-- Desktop Nav -->
                 <nav class="hidden md:flex items-center space-x-8">
                     <a asp-controller="Home" asp-action="Index" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Catalog</a>
                     <a asp-controller="Home" asp-action="Pricing" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Pricing</a>
-                    
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <a asp-controller="Library" asp-action="Index" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">My Library</a>
@@ -75,13 +65,10 @@
                         }
                     }
                 </nav>
-                
-                <!-- Auth Section -->
                 <div class="hidden md:flex items-center space-x-4">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <div class="flex items-center gap-4">
-                            <!-- Tokens pill removed as requested -->
                             <form class="m-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                 <button type="submit" class="text-sm font-medium text-gray-400 hover:text-white transition-colors">Sign out</button>
                             </form>
@@ -97,12 +84,10 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @RenderBody()
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 border-t border-gray-800 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-gray-500 text-sm">

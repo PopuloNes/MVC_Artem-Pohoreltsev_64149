@@ -17,7 +17,6 @@ public class HomeController : Controller
     public IActionResult Index(int? categoryId, string? searchQuery)
     {
         var books = _context.Books.Include(b => b.Ratings).AsQueryable();
-        
         if (categoryId.HasValue)
         {
             books = books.Where(b => b.CategoryId == categoryId.Value);

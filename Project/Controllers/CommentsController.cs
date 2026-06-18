@@ -18,7 +18,6 @@ namespace RaceReader.Controllers
             _context = context;
         }
 
-        // GET: Comments
         public async Task<IActionResult> Index()
         {
             var comments = await _context.Comments
@@ -29,7 +28,6 @@ namespace RaceReader.Controllers
             return View(comments);
         }
 
-        // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -48,7 +46,6 @@ namespace RaceReader.Controllers
             return View(comment);
         }
 
-        // POST: Comments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Text")] Comment commentData)
@@ -85,7 +82,6 @@ namespace RaceReader.Controllers
             return View(commentData);
         }
 
-        // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -105,7 +101,6 @@ namespace RaceReader.Controllers
             return View(comment);
         }
 
-        // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

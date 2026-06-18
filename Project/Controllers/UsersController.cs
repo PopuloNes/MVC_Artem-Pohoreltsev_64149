@@ -22,14 +22,12 @@ namespace RaceReader.Controllers
             _context = context;
         }
 
-        // GET: Users
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
             return View(users);
         }
 
-        // GET: Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -46,7 +44,6 @@ namespace RaceReader.Controllers
             return View(user);
         }
 
-        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -71,7 +68,6 @@ namespace RaceReader.Controllers
             return View(model);
         }
 
-        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, UserEditViewModel model)
@@ -90,7 +86,7 @@ namespace RaceReader.Controllers
                 }
 
                 user.Email = model.Email;
-                user.UserName = model.Email; // Keep them synced
+                user.UserName = model.Email; 
                 user.TokenBalance = model.TokenBalance;
                 user.EmailConfirmed = model.EmailConfirmed;
 
@@ -109,7 +105,6 @@ namespace RaceReader.Controllers
             return View(model);
         }
 
-        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -126,7 +121,6 @@ namespace RaceReader.Controllers
             return View(user);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -134,9 +128,6 @@ namespace RaceReader.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
-                // Identity DeleteAsync handles associated standard Identity data, 
-                // but we should ideally ensure dependent entities (Transactions, etc.) are deleted if not configured with cascade delete.
-                // Assuming EF Core cascade delete is on for user relations.
                 await _userManager.DeleteAsync(user);
             }
 

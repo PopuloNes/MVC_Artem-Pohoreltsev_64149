@@ -29,7 +29,6 @@ namespace RaceReader.Controllers
 
             if (user.TokenBalance <= 0)
             {
-                // Redirect to pricing if out of tokens
                 return RedirectToAction("Pricing", "Home", new { outOfTokens = true });
             }
 
@@ -47,8 +46,6 @@ namespace RaceReader.Controllers
                 _context.ReadingSessions.Add(session);
                 await _context.SaveChangesAsync();
             }
-            
-            // Add to library if not there
             var libraryEntry = await _context.UserLibraries.FirstOrDefaultAsync(l => l.BookId == id && l.UserId == userId);
             if(libraryEntry == null)
             {
@@ -69,7 +66,7 @@ namespace RaceReader.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken] // allowing simple JS fetch
+        [IgnoreAntiforgeryToken] 
         public async Task<IActionResult> DeductTokenAndSaveProgress([FromBody] ProgressUpdateModel data)
         {
             if (data == null) return BadRequest();
@@ -84,10 +81,7 @@ namespace RaceReader.Controllers
             if (user.TokenBalance <= 0)
                 return Json(new { success = false, tokens = 0, message = "Out of tokens" });
 
-            // Deduct 1 token per minute ping
             user.TokenBalance -= 1;
-            
-            // Update session
             session.LastPageRead = data.Page;
             session.TotalTokensSpent += 1;
             session.TotalMinutesSpent += 1;
@@ -97,12 +91,10 @@ namespace RaceReader.Controllers
 
             return Json(new { success = true, tokens = user.TokenBalance });
         }
-        
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> SaveProgress([FromBody] ProgressUpdateModel data)
         {
-            // Just saves page, without deducting token (for when user turns page)
             var userId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var session = await _context.ReadingSessions.FindAsync(data.SessionId);
 
@@ -111,7 +103,6 @@ namespace RaceReader.Controllers
                 session.LastPageRead = data.Page;
                 await _context.SaveChangesAsync();
             }
-            
             return Ok();
         }
 
@@ -125,7 +116,6 @@ namespace RaceReader.Controllers
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
             var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.BookId == data.BookId && r.UserId == userId);
-            
             if (rating == null)
             {
                 rating = new Rating { BookId = data.BookId, UserId = userId, Score = data.Score };
@@ -134,7 +124,7 @@ namespace RaceReader.Controllers
             else
             {
                 rating.Score = data.Score;
-                rating.CreatedAt = DateTime.UtcNow; // update timestamp
+                rating.CreatedAt = DateTime.UtcNow; 
             }
 
             await _context.SaveChangesAsync();

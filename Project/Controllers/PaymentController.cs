@@ -68,7 +68,6 @@ namespace RaceReader.Controllers
             };
 
             var service = new SessionService();
-            
             try 
             {
                 var session = service.Create(options);
@@ -76,7 +75,6 @@ namespace RaceReader.Controllers
             }
             catch(Exception ex)
             {
-                // Если ключ недействителен или отсутствует, выводим ошибку, а не имитируем
                 return BadRequest($"Stripe error: {ex.Message}");
             }
         }
@@ -92,11 +90,9 @@ namespace RaceReader.Controllers
             }
 
             var user = await _context.Users.FindAsync(userId);
-            
             if (user != null)
             {
                 user.TokenBalance += tokens;
-                
                 _context.Transactions.Add(new Transaction
                 {
                     UserId = userId,
@@ -106,10 +102,8 @@ namespace RaceReader.Controllers
                     Status = "Completed",
                     CreatedAt = DateTime.UtcNow
                 });
-                
                 await _context.SaveChangesAsync();
             }
-            
             return View("Success");
         }
 
@@ -125,18 +119,14 @@ namespace RaceReader.Controllers
                     if (session != null && session.PaymentStatus == "paid")
                     {
                         var existingTx = await _context.Transactions.FirstOrDefaultAsync(t => t.StripeSessionId == session.Id);
-                        
-                        // Если вебхук еще не успел обработать или не дошел (например, на localhost)
                         if (existingTx == null)
                         {
                             var userId = session.Metadata["UserId"];
                             var tokens = int.Parse(session.Metadata["Tokens"]);
-                            
                             var user = await _context.Users.FindAsync(userId);
                             if (user != null)
                             {
                                 user.TokenBalance += tokens;
-                                
                                 _context.Transactions.Add(new Transaction
                                 {
                                     UserId = userId,
@@ -146,7 +136,6 @@ namespace RaceReader.Controllers
                                     Status = "Completed",
                                     CreatedAt = DateTime.UtcNow
                                 });
-                                
                                 await _context.SaveChangesAsync();
                             }
                         }
@@ -154,11 +143,8 @@ namespace RaceReader.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Логируем или игнорируем ошибку получения сессии, 
-                    // чтобы не пугать пользователя на странице успеха
                 }
             }
-            
             return View();
         }
 
@@ -176,17 +162,14 @@ namespace RaceReader.Controllers
                 if (stripeEvent.Type == "checkout.session.completed")
                 {
                     var session = stripeEvent.Data.Object as Session;
-                    
                     if (session != null)
                     {
                         var userId = session.Metadata["UserId"];
                         var tokens = int.Parse(session.Metadata["Tokens"]);
-                        
                         var user = await _context.Users.FindAsync(userId);
                         if (user != null)
                         {
                             user.TokenBalance += tokens;
-                            
                             _context.Transactions.Add(new Transaction
                             {
                                 UserId = userId,
@@ -196,7 +179,6 @@ namespace RaceReader.Controllers
                                 Status = "Completed",
                                 CreatedAt = DateTime.UtcNow
                             });
-                            
                             await _context.SaveChangesAsync();
                         }
                     }

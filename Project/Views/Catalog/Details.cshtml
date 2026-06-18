@@ -13,7 +13,6 @@
 
 <div class="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden shadow-2xl mb-12">
     <div class="flex flex-col md:flex-row">
-        <!-- Cover -->
         <div class="w-full md:w-1/3 lg:w-1/4 bg-gray-800 flex-shrink-0 relative">
             @if (!string.IsNullOrEmpty(Model.CoverImagePath))
             {
@@ -24,18 +23,14 @@
                 <div class="w-full aspect-[2/3] md:h-full flex items-center justify-center text-gray-600 font-display italic text-2xl uppercase">No Cover</div>
             }
         </div>
-        
-        <!-- Details -->
         <div class="p-8 md:p-12 flex-grow flex flex-col justify-center">
             <div class="flex items-center gap-3 mb-4">
                 <span class="px-3 py-1 bg-gray-800 text-gray-300 text-xs font-bold rounded uppercase tracking-wider">
                     @(Model.Category?.Name ?? "N/A")
                 </span>
             </div>
-            
             <h1 class="font-display font-black text-4xl text-white mb-2 leading-tight">@Model.Title</h1>
             <p class="text-xl text-gray-400 mb-6 font-medium">@Model.Author</p>
-            
             <div class="flex items-center gap-2 mb-8">
                 <div class="flex text-yellow-500">
                     @for (int i = 1; i <= 5; i++)
@@ -52,11 +47,9 @@
                 </div>
                 <span class="text-gray-400 font-medium">@avgRating (@Model.Ratings.Count reviews)</span>
             </div>
-            
             <div class="prose prose-invert max-w-none mb-10 text-gray-300">
                 <p>@(string.IsNullOrWhiteSpace(Model.Description) ? "No description available." : Model.Description)</p>
             </div>
-            
             <div class="mt-auto">
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
@@ -78,10 +71,9 @@
     </div>
 </div>
 
-<!-- Reviews Section -->
+
 <div class="bg-gray-900 rounded-2xl border border-gray-800 p-8 shadow-xl">
     <h3 class="font-display font-bold text-2xl text-white mb-8 border-b border-gray-800 pb-4">Community Reviews</h3>
-    
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
         <form asp-action="AddComment" method="post" class="mb-10 bg-gray-800/50 p-6 rounded-xl border border-gray-700">

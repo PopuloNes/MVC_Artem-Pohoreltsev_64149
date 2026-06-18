@@ -22,7 +22,6 @@ namespace RaceReader.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override defaults if needed.
         }
     }
 }
